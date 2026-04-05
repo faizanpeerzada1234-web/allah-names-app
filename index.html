@@ -4,258 +4,194 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>99 Names of Allah</title>
-
 <style>
-body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    display: flex;
-    background: black;
-    color: white;
-}
-
-/* Sidebar */
-.sidebar {
-    width: 250px;
-    height: 100vh;
-    overflow-y: auto;
-    background: #111;
-    padding: 10px;
-}
-
-.sidebar div {
-    padding: 10px;
-    cursor: pointer;
-    border-bottom: 1px solid #222;
-}
-
-.sidebar div:hover {
-    background: #00c896;
-    color: black;
-}
-
-.active {
-    background: #00c896;
-    color: black;
-}
-  <!-- Close Button -->
-    <button onclick="toggleMenu()" style="
-        margin:10px; 
-        padding:5px 10px; 
-        font-size:18px; 
-        background:#00c896; 
-        border:none; 
-        color:black; 
-        cursor:pointer;
-        border-radius:5px;
-    ">× Close</button>
-
-/* Main Content */
-.main {
-    flex: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-}
-
-h1 {
-    font-size: 60px;
-}
-
-p {
-    font-size: 24px;
-}
-
-button {
-    margin-top: 20px;
-    padding: 15px 25px;
-    font-size: 18px;
-    border: none;
-    border-radius: 10px;
-    background: #00c896;
-    cursor: pointer;
-}
-
-/* Mobile */
-@media(max-width: 768px) {
-    .sidebar {
-        position: absolute;
-        left: -250px;
-        transition: 0.3s;
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background-color: #111; /* Dark background */
+        color: #fff; /* White text */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
     }
 
-    .sidebar.show {
+    /* Sidebar */
+    #sidebar {
+        position: fixed;
+        top: 0;
+        left: -260px;
+        width: 260px;
+        height: 100%;
+        background-color: #222;
+        overflow-y: auto;
+        transition: 0.3s;
+        padding-top: 20px;
+        z-index: 1000;
+    }
+    #sidebar.show {
         left: 0;
     }
-
-    .menu-btn {
-        position: absolute;
-        top: 10px;
-        left: 10px;
+    #sidebar button {
+        display: block;
+        width: 90%;
+        margin: 10px auto;
+        font-size: 18px;
+        padding: 8px 10px;
         background: #00c896;
         border: none;
-        padding: 10px;
+        color: black;
+        cursor: pointer;
+        border-radius: 5px;
+        z-index: 1001;
     }
-}
+    #sidebar ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    #sidebar li {
+        padding: 10px;
+        border-bottom: 1px solid #444;
+        cursor: pointer;
+        text-align: center;
+    }
+    #sidebar li:hover {
+        background-color: #00c896;
+        color: black;
+    }
+
+    /* Menu button */
+    .menu-btn {
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        font-size: 24px;
+        padding: 8px 12px;
+        background: #00c896;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        z-index: 1100;
+        color: black;
+    }
+
+    /* Name display */
+    #name-display {
+        font-size: 40px;
+        text-align: center;
+        margin: 0 20px;
+        word-wrap: break-word;
+    }
+
+    /* Navigation buttons */
+    .nav-btns {
+        margin-top: 30px;
+    }
+    .nav-btns button {
+        font-size: 20px;
+        padding: 10px 20px;
+        margin: 0 10px;
+        background-color: #00c896;
+        color: black;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    @media (max-width: 500px) {
+        #name-display {
+            font-size: 28px;
+        }
+        .nav-btns button {
+            font-size: 16px;
+            padding: 8px 15px;
+            margin: 0 5px;
+        }
+    }
 </style>
 </head>
-
 <body>
 
-<button class="menu-btn" onclick="toggleMenu()">☰</button>
+<button class="menu-btn" onclick="toggleMenu()">☰ Menu</button>
 
-<div class="sidebar" id="sidebar"></div>
+<div id="sidebar">
+    <button onclick="toggleMenu()">× Close</button>
+    <ul id="name-list">
+        <!-- Names will be dynamically inserted here -->
+    </ul>
+</div>
 
-<div class="main">
-    <div>
-        <h1 id="name"></h1>
-        <p id="meaning"></p>
-        <button onclick="nextName()">Next ➡️</button>
-    </div>
+<div id="name-display">Loading...</div>
+
+<div class="nav-btns">
+    <button onclick="prevName()">Previous</button>
+    <button onclick="nextName()">Next</button>
 </div>
 
 <script>
-const names = [
-["Ar-Rahman","The Most Merciful"],
-["Ar-Raheem","The Most Compassionate"],
-["Al-Malik","The King"],
-["Al-Quddus","The Most Holy"],
-["As-Salam","The Source of Peace"],
-["Al-Mu’min","The Giver of Faith"],
-["Al-Muhaymin","The Guardian"],
-["Al-Aziz","The Mighty"],
-["Al-Jabbar","The Compeller"],
-["Al-Mutakabbir","The Supreme"],
-["Al-Khaliq","The Creator"],
-["Al-Bari","The Evolver"],
-["Al-Musawwir","The Fashioner"],
-["Al-Ghaffar","The Forgiver"],
-["Al-Qahhar","The Subduer"],
-["Al-Wahhab","The Bestower"],
-["Ar-Razzaq","The Provider"],
-["Al-Fattah","The Opener"],
-["Al-Alim","The All-Knowing"],
-["Al-Qabid","The Withholder"],
-["Al-Basit","The Expander"],
-["Al-Khafid","The Abaser"],
-["Ar-Rafi","The Exalter"],
-["Al-Mu’izz","The Honorer"],
-["Al-Mudhill","The Dishonorer"],
-["As-Sami","The All-Hearing"],
-["Al-Basir","The All-Seeing"],
-["Al-Hakam","The Judge"],
-["Al-Adl","The Just"],
-["Al-Latif","The Subtle"],
-["Al-Khabir","The All-Aware"],
-["Al-Halim","The Forbearing"],
-["Al-Azim","The Magnificent"],
-["Al-Ghafur","The Forgiver"],
-["Ash-Shakur","The Appreciative"],
-["Al-Ali","The Most High"],
-["Al-Kabir","The Great"],
-["Al-Hafiz","The Preserver"],
-["Al-Muqit","The Sustainer"],
-["Al-Hasib","The Reckoner"],
-["Al-Jalil","The Majestic"],
-["Al-Karim","The Generous"],
-["Ar-Raqib","The Watchful"],
-["Al-Mujib","The Responsive"],
-["Al-Wasi","The All-Encompassing"],
-["Al-Hakim","The Wise"],
-["Al-Wadud","The Loving"],
-["Al-Majid","The Glorious"],
-["Al-Ba’ith","The Resurrector"],
-["Ash-Shahid","The Witness"],
-["Al-Haqq","The Truth"],
-["Al-Wakil","The Trustee"],
-["Al-Qawiyy","The Strong"],
-["Al-Matin","The Firm"],
-["Al-Waliyy","The Protector"],
-["Al-Hamid","The Praiseworthy"],
-["Al-Muhsi","The Counter"],
-["Al-Mubdi","The Originator"],
-["Al-Mu’id","The Restorer"],
-["Al-Muhyi","The Giver of Life"],
-["Al-Mumit","The Creator of Death"],
-["Al-Hayy","The Ever Living"],
-["Al-Qayyum","The Sustainer"],
-["Al-Wajid","The Finder"],
-["Al-Majid","The Noble"],
-["Al-Wahid","The One"],
-["Al-Ahad","The Unique"],
-["As-Samad","The Eternal"],
-["Al-Qadir","The Powerful"],
-["Al-Muqtadir","The Creator of Power"],
-["Al-Muqaddim","The Expediter"],
-["Al-Mu’akhkhir","The Delayer"],
-["Al-Awwal","The First"],
-["Al-Akhir","The Last"],
-["Az-Zahir","The Manifest"],
-["Al-Batin","The Hidden"],
-["Al-Wali","The Governor"],
-["Al-Muta’ali","The Most Exalted"],
-["Al-Barr","The Source of Good"],
-["At-Tawwab","The Acceptor of Repentance"],
-["Al-Muntaqim","The Avenger"],
-["Al-Afuw","The Pardoner"],
-["Ar-Ra’uf","The Kind"],
-["Malik-ul-Mulk","Master of Kingdom"],
-["Dhul-Jalali wal-Ikram","Lord of Majesty"],
-["Al-Muqsit","The Just"],
-["Al-Jami","The Gatherer"],
-["Al-Ghani","The Self-Sufficient"],
-["Al-Mughni","The Enricher"],
-["Al-Mani","The Preventer"],
-["Ad-Darr","The Distresser"],
-["An-Nafi","The Benefactor"],
-["An-Nur","The Light"],
-["Al-Hadi","The Guide"],
-["Al-Badi","The Originator"],
-["Al-Baqi","The Everlasting"],
-["Al-Warith","The Inheritor"],
-["Ar-Rashid","The Guide"],
-["As-Sabur","The Patient"]
-];
+    const names = [
+        "Allah", "Ar-Rahman", "Ar-Rahim", "Al-Malik", "Al-Quddus", "As-Salam",
+        "Al-Mu’min", "Al-Muhaymin", "Al-Aziz", "Al-Jabbar", "Al-Mutakabbir",
+        "Al-Khaliq", "Al-Bari", "Al-Musawwir", "Al-Ghaffar", "Al-Qahhar",
+        "Al-Wahhab", "Ar-Razzaq", "Al-Fattah", "Al-‘Alim", "Al-Qabid",
+        "Al-Basit", "Al-Khafid", "Ar-Rafi", "Al-Mu’izz", "Al-Mudhill",
+        "As-Sami", "Al-Basir", "Al-Hakam", "Al-‘Adl", "Al-Latif", "Al-Khabir",
+        "Al-Halim", "Al-Azim", "Al-Ghafur", "Ash-Shakur", "Al-Ali", "Al-Kabir",
+        "Al-Hafiz", "Al-Muqit", "Al-Hasib", "Al-Jalil", "Al-Karim", "Ar-Raqib",
+        "Al-Mujib", "Al-Wasi", "Al-Hakim", "Al-Wadud", "Al-Majid", "Al-Ba’ith",
+        "Ash-Shahid", "Al-Haqq", "Al-Wakil", "Al-Qawi", "Al-Matin", "Al-Wali",
+        "Al-Hamid", "Al-Muhsi", "Al-Mubdi", "Al-Mu’id", "Al-Muhyi", "Al-Mumit",
+        "Al-Hayy", "Al-Qayyum", "Al-Wajid", "Al-Majid", "Al-Wahid", "Al-Ahad",
+        "As-Samad", "Al-Qadir", "Al-Muqtadir", "Al-Muqaddim", "Al-Mu’akhkhir",
+        "Al-Awwal", "Al-Akhir", "Az-Zahir", "Al-Batin", "Al-Wali", "Al-Muta’ali",
+        "Al-Barr", "At-Tawwab", "Al-Muntaqim", "Al-‘Afuww", "Ar-Ra’uf", "Malik-ul-Mulk",
+        "Dhul-Jalal wal-Ikram", "Al-Muqsit", "Al-Jami", "Al-Ghani", "Al-Mughni",
+        "Al-Mani", "Ad-Darr", "An-Nafi", "An-Nur", "Al-Hadi", "Al-Badi", "Al-Baqi",
+        "Al-Warith", "Ar-Rashid", "As-Sabur"
+    ];
 
-let index = 0;
-const sidebar = document.getElementById("sidebar");
+    let currentIndex = 0;
 
-// Create sidebar list
-names.forEach((item, i) => {
-    const div = document.createElement("div");
-    div.innerText = item[0];
-    div.onclick = () => selectName(i);
-    sidebar.appendChild(div);
-});
+    function showName(index) {
+        document.getElementById("name-display").innerText = names[index];
+        highlightSidebar(index);
+    }
 
-function showName() {
-    document.getElementById("name").innerText = names[index][0];
-    document.getElementById("meaning").innerText = names[index][1];
+    function nextName() {
+        currentIndex = (currentIndex + 1) % names.length;
+        showName(currentIndex);
+    }
 
-    // Highlight active
-    Array.from(sidebar.children).forEach((el, i) => {
-        el.classList.toggle("active", i === index);
+    function prevName() {
+        currentIndex = (currentIndex - 1 + names.length) % names.length;
+        showName(currentIndex);
+    }
+
+    function toggleMenu() {
+        document.getElementById("sidebar").classList.toggle("show");
+    }
+
+    function highlightSidebar(index) {
+        const items = document.querySelectorAll("#name-list li");
+        items.forEach((item, i) => {
+            item.style.backgroundColor = i === index ? "#00c896" : "transparent";
+            item.style.color = i === index ? "black" : "white";
+        });
+    }
+
+    // Populate sidebar
+    const sidebarList = document.getElementById("name-list");
+    names.forEach((name, i) => {
+        const li = document.createElement("li");
+        li.innerText = name;
+        li.onclick = () => { currentIndex = i; showName(i); toggleMenu(); };
+        sidebarList.appendChild(li);
     });
-}
 
-function nextName() {
-    index = (index + 1) % names.length;
-    showName();
-}
-
-function selectName(i) {
-    index = i;
-    showName();
-}
-
-function toggleMenu() {
-    document.getElementById("sidebar").classList.toggle("show");
-}
-
-// Initial load
-showName();
+    // Initial display
+    showName(currentIndex);
 </script>
-
 </body>
 </html>
