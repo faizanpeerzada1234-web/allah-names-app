@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -8,8 +8,8 @@
     body {
         margin: 0;
         font-family: Arial, sans-serif;
-        background-color: #111; /* Dark background */
-        color: #fff; /* White text */
+        background-color: #111;
+        color: #fff;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -79,10 +79,17 @@
 
     /* Name display */
     #name-display {
-        font-size: 40px;
         text-align: center;
         margin: 0 20px;
-        word-wrap: break-word;
+    }
+    #name-display #name {
+        font-size: 40px;
+        font-weight: bold;
+    }
+    #name-display #meaning {
+        font-size: 20px;
+        margin-top: 10px;
+        color: #ccc;
     }
 
     /* Navigation buttons */
@@ -101,8 +108,11 @@
     }
 
     @media (max-width: 500px) {
-        #name-display {
+        #name-display #name {
             font-size: 28px;
+        }
+        #name-display #meaning {
+            font-size: 16px;
         }
         .nav-btns button {
             font-size: 16px;
@@ -119,11 +129,14 @@
 <div id="sidebar">
     <button onclick="toggleMenu()">× Close</button>
     <ul id="name-list">
-        <!-- Names will be dynamically inserted here -->
+        <!-- List will be dynamically generated -->
     </ul>
 </div>
 
-<div id="name-display">Loading...</div>
+<div id="name-display">
+    <div id="name">Loading...</div>
+    <div id="meaning"></div>
+</div>
 
 <div class="nav-btns">
     <button onclick="prevName()">Previous</button>
@@ -132,30 +145,113 @@
 
 <script>
     const names = [
-        "Allah", "Ar-Rahman", "Ar-Rahim", "Al-Malik", "Al-Quddus", "As-Salam",
-        "Al-Mu’min", "Al-Muhaymin", "Al-Aziz", "Al-Jabbar", "Al-Mutakabbir",
-        "Al-Khaliq", "Al-Bari", "Al-Musawwir", "Al-Ghaffar", "Al-Qahhar",
-        "Al-Wahhab", "Ar-Razzaq", "Al-Fattah", "Al-‘Alim", "Al-Qabid",
-        "Al-Basit", "Al-Khafid", "Ar-Rafi", "Al-Mu’izz", "Al-Mudhill",
-        "As-Sami", "Al-Basir", "Al-Hakam", "Al-‘Adl", "Al-Latif", "Al-Khabir",
-        "Al-Halim", "Al-Azim", "Al-Ghafur", "Ash-Shakur", "Al-Ali", "Al-Kabir",
-        "Al-Hafiz", "Al-Muqit", "Al-Hasib", "Al-Jalil", "Al-Karim", "Ar-Raqib",
-        "Al-Mujib", "Al-Wasi", "Al-Hakim", "Al-Wadud", "Al-Majid", "Al-Ba’ith",
-        "Ash-Shahid", "Al-Haqq", "Al-Wakil", "Al-Qawi", "Al-Matin", "Al-Wali",
-        "Al-Hamid", "Al-Muhsi", "Al-Mubdi", "Al-Mu’id", "Al-Muhyi", "Al-Mumit",
-        "Al-Hayy", "Al-Qayyum", "Al-Wajid", "Al-Majid", "Al-Wahid", "Al-Ahad",
-        "As-Samad", "Al-Qadir", "Al-Muqtadir", "Al-Muqaddim", "Al-Mu’akhkhir",
-        "Al-Awwal", "Al-Akhir", "Az-Zahir", "Al-Batin", "Al-Wali", "Al-Muta’ali",
-        "Al-Barr", "At-Tawwab", "Al-Muntaqim", "Al-‘Afuww", "Ar-Ra’uf", "Malik-ul-Mulk",
-        "Dhul-Jalal wal-Ikram", "Al-Muqsit", "Al-Jami", "Al-Ghani", "Al-Mughni",
-        "Al-Mani", "Ad-Darr", "An-Nafi", "An-Nur", "Al-Hadi", "Al-Badi", "Al-Baqi",
-        "Al-Warith", "Ar-Rashid", "As-Sabur"
+        {name: "Allah", meaning: "The God, The Only One Worthy of Worship"},
+        {name: "Ar-Rahman", meaning: "The Most Gracious"},
+        {name: "Ar-Rahim", meaning: "The Most Merciful"},
+        {name: "Al-Malik", meaning: "The King, The Sovereign"},
+        {name: "Al-Quddus", meaning: "The Pure, The Holy"},
+        {name: "As-Salam", meaning: "The Source of Peace"},
+        {name: "Al-Mu’min", meaning: "The Granter of Security"},
+        {name: "Al-Muhaymin", meaning: "The Protector"},
+        {name: "Al-Aziz", meaning: "The Mighty"},
+        {name: "Al-Jabbar", meaning: "The Compeller"},
+        {name: "Al-Mutakabbir", meaning: "The Supreme, The Majestic"},
+        {name: "Al-Khaliq", meaning: "The Creator"},
+        {name: "Al-Bari", meaning: "The Evolver"},
+        {name: "Al-Musawwir", meaning: "The Fashioner"},
+        {name: "Al-Ghaffar", meaning: "The Forgiving"},
+        {name: "Al-Qahhar", meaning: "The All-Prevailing One"},
+        {name: "Al-Wahhab", meaning: "The Bestower"},
+        {name: "Ar-Razzaq", meaning: "The Provider"},
+        {name: "Al-Fattah", meaning: "The Opener"},
+        {name: "Al-‘Alim", meaning: "The All-Knowing"},
+        {name: "Al-Qabid", meaning: "The Constrictor"},
+        {name: "Al-Basit", meaning: "The Expander"},
+        {name: "Al-Khafid", meaning: "The Abaser"},
+        {name: "Ar-Rafi", meaning: "The Exalter"},
+        {name: "Al-Mu’izz", meaning: "The Bestower of Honor"},
+        {name: "Al-Mudhill", meaning: "The Humiliator"},
+        {name: "As-Sami", meaning: "The All-Hearing"},
+        {name: "Al-Basir", meaning: "The All-Seeing"},
+        {name: "Al-Hakam", meaning: "The Judge"},
+        {name: "Al-‘Adl", meaning: "The Just"},
+        {name: "Al-Latif", meaning: "The Subtle One"},
+        {name: "Al-Khabir", meaning: "The All-Aware"},
+        {name: "Al-Halim", meaning: "The Forbearing"},
+        {name: "Al-Azim", meaning: "The Magnificent"},
+        {name: "Al-Ghafur", meaning: "The All-Forgiving"},
+        {name: "Ash-Shakur", meaning: "The Most Appreciative"},
+        {name: "Al-Ali", meaning: "The Most High"},
+        {name: "Al-Kabir", meaning: "The Most Great"},
+        {name: "Al-Hafiz", meaning: "The Preserver"},
+        {name: "Al-Muqit", meaning: "The Sustainer"},
+        {name: "Al-Hasib", meaning: "The Reckoner"},
+        {name: "Al-Jalil", meaning: "The Majestic"},
+        {name: "Al-Karim", meaning: "The Most Generous"},
+        {name: "Ar-Raqib", meaning: "The Watchful"},
+        {name: "Al-Mujib", meaning: "The Responsive One"},
+        {name: "Al-Wasi", meaning: "The All-Encompassing"},
+        {name: "Al-Hakim", meaning: "The All-Wise"},
+        {name: "Al-Wadud", meaning: "The Loving"},
+        {name: "Al-Majid", meaning: "The Most Glorious"},
+        {name: "Al-Ba’ith", meaning: "The Resurrector"},
+        {name: "Ash-Shahid", meaning: "The Witness"},
+        {name: "Al-Haqq", meaning: "The Truth"},
+        {name: "Al-Wakil", meaning: "The Trustee"},
+        {name: "Al-Qawi", meaning: "The Strong"},
+        {name: "Al-Matin", meaning: "The Firm, The Steadfast"},
+        {name: "Al-Wali", meaning: "The Protecting Friend"},
+        {name: "Al-Hamid", meaning: "The Praiseworthy"},
+        {name: "Al-Muhsi", meaning: "The Reckoner"},
+        {name: "Al-Mubdi", meaning: "The Originator"},
+        {name: "Al-Mu’id", meaning: "The Restorer"},
+        {name: "Al-Muhyi", meaning: "The Giver of Life"},
+        {name: "Al-Mumit", meaning: "The Taker of Life"},
+        {name: "Al-Hayy", meaning: "The Ever-Living"},
+        {name: "Al-Qayyum", meaning: "The Self-Subsisting"},
+        {name: "Al-Wajid", meaning: "The Finder"},
+        {name: "Al-Majid", meaning: "The Noble, The Glorious"},
+        {name: "Al-Wahid", meaning: "The One"},
+        {name: "Al-Ahad", meaning: "The Unique, The Only One"},
+        {name: "As-Samad", meaning: "The Eternal, Absolute"},
+        {name: "Al-Qadir", meaning: "The All-Powerful"},
+        {name: "Al-Muqtadir", meaning: "The Creator of All Power"},
+        {name: "Al-Muqaddim", meaning: "The Expediter"},
+        {name: "Al-Mu’akhkhir", meaning: "The Delayer"},
+        {name: "Al-Awwal", meaning: "The First"},
+        {name: "Al-Akhir", meaning: "The Last"},
+        {name: "Az-Zahir", meaning: "The Manifest"},
+        {name: "Al-Batin", meaning: "The Hidden"},
+        {name: "Al-Wali", meaning: "The Governor"),
+        {name: "Al-Muta’ali", meaning: "The Most Exalted"},
+        {name: "Al-Barr", meaning: "The Source of All Goodness"},
+        {name: "At-Tawwab", meaning: "The Acceptor of Repentance"},
+        {name: "Al-Muntaqim", meaning: "The Avenger"},
+        {name: "Al-‘Afuww", meaning: "The Pardoner"},
+        {name: "Ar-Ra’uf", meaning: "The Most Kind"),
+        {name: "Malik-ul-Mulk", meaning: "The Owner of All"},
+        {name: "Dhul-Jalal wal-Ikram", meaning: "The Lord of Majesty and Bounty"},
+        {name: "Al-Muqsit", meaning: "The Equitable"},
+        {name: "Al-Jami", meaning: "The Gatherer"},
+        {name: "Al-Ghani", meaning: "The Rich, Free of Need"},
+        {name: "Al-Mughni", meaning: "The Enricher"},
+        {name: "Al-Mani", meaning: "The Preventer"},
+        {name: "Ad-Darr", meaning: "The Distresser"},
+        {name: "An-Nafi", meaning: "The Benefactor"},
+        {name: "An-Nur", meaning: "The Light"},
+        {name: "Al-Hadi", meaning: "The Guide"},
+        {name: "Al-Badi", meaning: "The Incomparable"},
+        {name: "Al-Baqi", meaning: "The Everlasting"},
+        {name: "Al-Warith", meaning: "The Inheritor"},
+        {name: "Ar-Rashid", meaning: "The Guide to the Right Path"},
+        {name: "As-Sabur", meaning: "The Patient"}
     ];
 
     let currentIndex = 0;
 
     function showName(index) {
-        document.getElementById("name-display").innerText = names[index];
+        document.getElementById("name").innerText = names[index].name;
+        document.getElementById("meaning").innerText = names[index].meaning;
         highlightSidebar(index);
     }
 
@@ -183,9 +279,9 @@
 
     // Populate sidebar
     const sidebarList = document.getElementById("name-list");
-    names.forEach((name, i) => {
+    names.forEach((obj, i) => {
         const li = document.createElement("li");
-        li.innerText = name;
+        li.innerText = obj.name;
         li.onclick = () => { currentIndex = i; showName(i); toggleMenu(); };
         sidebarList.appendChild(li);
     });
