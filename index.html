@@ -1,0 +1,250 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>99 Names of Allah</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    background: black;
+    color: white;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    overflow-y: auto;
+    background: #111;
+    padding: 10px;
+}
+
+.sidebar div {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #222;
+}
+
+.sidebar div:hover {
+    background: #00c896;
+    color: black;
+}
+
+.active {
+    background: #00c896;
+    color: black;
+}
+
+/* Main Content */
+.main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+h1 {
+    font-size: 60px;
+}
+
+p {
+    font-size: 24px;
+}
+
+button {
+    margin-top: 20px;
+    padding: 15px 25px;
+    font-size: 18px;
+    border: none;
+    border-radius: 10px;
+    background: #00c896;
+    cursor: pointer;
+}
+
+/* Mobile */
+@media(max-width: 768px) {
+    .sidebar {
+        position: absolute;
+        left: -250px;
+        transition: 0.3s;
+    }
+
+    .sidebar.show {
+        left: 0;
+    }
+
+    .menu-btn {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background: #00c896;
+        border: none;
+        padding: 10px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<button class="menu-btn" onclick="toggleMenu()">☰</button>
+
+<div class="sidebar" id="sidebar"></div>
+
+<div class="main">
+    <div>
+        <h1 id="name"></h1>
+        <p id="meaning"></p>
+        <button onclick="nextName()">Next ➡️</button>
+    </div>
+</div>
+
+<script>
+const names = [
+["Ar-Rahman","The Most Merciful"],
+["Ar-Raheem","The Most Compassionate"],
+["Al-Malik","The King"],
+["Al-Quddus","The Most Holy"],
+["As-Salam","The Source of Peace"],
+["Al-Mu’min","The Giver of Faith"],
+["Al-Muhaymin","The Guardian"],
+["Al-Aziz","The Mighty"],
+["Al-Jabbar","The Compeller"],
+["Al-Mutakabbir","The Supreme"],
+["Al-Khaliq","The Creator"],
+["Al-Bari","The Evolver"],
+["Al-Musawwir","The Fashioner"],
+["Al-Ghaffar","The Forgiver"],
+["Al-Qahhar","The Subduer"],
+["Al-Wahhab","The Bestower"],
+["Ar-Razzaq","The Provider"],
+["Al-Fattah","The Opener"],
+["Al-Alim","The All-Knowing"],
+["Al-Qabid","The Withholder"],
+["Al-Basit","The Expander"],
+["Al-Khafid","The Abaser"],
+["Ar-Rafi","The Exalter"],
+["Al-Mu’izz","The Honorer"],
+["Al-Mudhill","The Dishonorer"],
+["As-Sami","The All-Hearing"],
+["Al-Basir","The All-Seeing"],
+["Al-Hakam","The Judge"],
+["Al-Adl","The Just"],
+["Al-Latif","The Subtle"],
+["Al-Khabir","The All-Aware"],
+["Al-Halim","The Forbearing"],
+["Al-Azim","The Magnificent"],
+["Al-Ghafur","The Forgiver"],
+["Ash-Shakur","The Appreciative"],
+["Al-Ali","The Most High"],
+["Al-Kabir","The Great"],
+["Al-Hafiz","The Preserver"],
+["Al-Muqit","The Sustainer"],
+["Al-Hasib","The Reckoner"],
+["Al-Jalil","The Majestic"],
+["Al-Karim","The Generous"],
+["Ar-Raqib","The Watchful"],
+["Al-Mujib","The Responsive"],
+["Al-Wasi","The All-Encompassing"],
+["Al-Hakim","The Wise"],
+["Al-Wadud","The Loving"],
+["Al-Majid","The Glorious"],
+["Al-Ba’ith","The Resurrector"],
+["Ash-Shahid","The Witness"],
+["Al-Haqq","The Truth"],
+["Al-Wakil","The Trustee"],
+["Al-Qawiyy","The Strong"],
+["Al-Matin","The Firm"],
+["Al-Waliyy","The Protector"],
+["Al-Hamid","The Praiseworthy"],
+["Al-Muhsi","The Counter"],
+["Al-Mubdi","The Originator"],
+["Al-Mu’id","The Restorer"],
+["Al-Muhyi","The Giver of Life"],
+["Al-Mumit","The Creator of Death"],
+["Al-Hayy","The Ever Living"],
+["Al-Qayyum","The Sustainer"],
+["Al-Wajid","The Finder"],
+["Al-Majid","The Noble"],
+["Al-Wahid","The One"],
+["Al-Ahad","The Unique"],
+["As-Samad","The Eternal"],
+["Al-Qadir","The Powerful"],
+["Al-Muqtadir","The Creator of Power"],
+["Al-Muqaddim","The Expediter"],
+["Al-Mu’akhkhir","The Delayer"],
+["Al-Awwal","The First"],
+["Al-Akhir","The Last"],
+["Az-Zahir","The Manifest"],
+["Al-Batin","The Hidden"],
+["Al-Wali","The Governor"],
+["Al-Muta’ali","The Most Exalted"],
+["Al-Barr","The Source of Good"],
+["At-Tawwab","The Acceptor of Repentance"],
+["Al-Muntaqim","The Avenger"],
+["Al-Afuw","The Pardoner"],
+["Ar-Ra’uf","The Kind"],
+["Malik-ul-Mulk","Master of Kingdom"],
+["Dhul-Jalali wal-Ikram","Lord of Majesty"],
+["Al-Muqsit","The Just"],
+["Al-Jami","The Gatherer"],
+["Al-Ghani","The Self-Sufficient"],
+["Al-Mughni","The Enricher"],
+["Al-Mani","The Preventer"],
+["Ad-Darr","The Distresser"],
+["An-Nafi","The Benefactor"],
+["An-Nur","The Light"],
+["Al-Hadi","The Guide"],
+["Al-Badi","The Originator"],
+["Al-Baqi","The Everlasting"],
+["Al-Warith","The Inheritor"],
+["Ar-Rashid","The Guide"],
+["As-Sabur","The Patient"]
+];
+
+let index = 0;
+const sidebar = document.getElementById("sidebar");
+
+// Create sidebar list
+names.forEach((item, i) => {
+    const div = document.createElement("div");
+    div.innerText = item[0];
+    div.onclick = () => selectName(i);
+    sidebar.appendChild(div);
+});
+
+function showName() {
+    document.getElementById("name").innerText = names[index][0];
+    document.getElementById("meaning").innerText = names[index][1];
+
+    // Highlight active
+    Array.from(sidebar.children).forEach((el, i) => {
+        el.classList.toggle("active", i === index);
+    });
+}
+
+function nextName() {
+    index = (index + 1) % names.length;
+    showName();
+}
+
+function selectName(i) {
+    index = i;
+    showName();
+}
+
+function toggleMenu() {
+    document.getElementById("sidebar").classList.toggle("show");
+}
+
+// Initial load
+showName();
+</script>
+
+</body>
+</html>
